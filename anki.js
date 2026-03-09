@@ -14,6 +14,11 @@ async function anki(action, params = {}) {
 // --- state ---
 let queue = [];
 let current = null;
+let onAnswerCallback = () => {};
+
+export function onAnswer(fn) {
+  onAnswerCallback = fn;
+}
 
 // --- init: populate deck dropdown ---
 const decks = await anki('deckNames');
@@ -43,9 +48,9 @@ $('#start-btn').addEventListener('click', async () => {
   showNext();
 });
 
-function renderInFrame(el, html, css = '') {
+function renderInFrame(el, html) {
   const iframe = document.createElement('iframe');
-  iframe.srcdoc = `${html}`;
+  iframe.srcdoc = html;
   iframe.style.cssText = 'width:100%;border:none;';
   iframe.scrolling = 'no';
   iframe.onload = () => {
@@ -70,7 +75,7 @@ function showNext() {
 
   current = queue.shift();
   $('#card-front').hidden = false;
-  renderInFrame($('#card-front'), current.question, current.css);
+  renderInFrame($('#card-front'), current.question);
   $('#card-back').hidden = true;
   $('#rating-buttons').hidden = true;
   $('#show-answer-btn').hidden = false;
@@ -89,7 +94,7 @@ $('#end-btn').addEventListener('click', returnToDeckPicker);
 
 $('#show-answer-btn').addEventListener('click', () => {
   $('#card-front').hidden = true;
-  renderInFrame($('#card-back'), current.answer, current.css);
+  renderInFrame($('#card-back'), current.answer);
   $('#card-back').hidden = false;
   $('#rating-buttons').hidden = false;
   $('#show-answer-btn').hidden = true;
@@ -99,6 +104,7 @@ $$('#rating-buttons button').forEach(btn => {
   btn.addEventListener('click', async () => {
     const ease = parseInt(btn.dataset.ease);
     await anki('answerCards', { answers: [{ cardId: current.cardId, ease }] });
+    onAnswerCallback(ease);
     showNext();
   });
 });
