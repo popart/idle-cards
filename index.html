@@ -5,8 +5,29 @@
   <title>Idle Cards</title>
 </head>
 <body>
-  <button id="load-decks">Load Decks</button>
-  <ul id="deck-list"></ul>
-  <script src="main.js"></script>
+  <div id="deck-picker">
+    <select id="deck-select"><option>Loading...</option></select>
+    <button id="start-btn">Start Review</button>
+  </div>
+
+  <div id="review" hidden>
+    <p id="queue-status"></p>
+    <button id="end-btn">End Review</button>
+    <div id="card-front"></div>
+    <button id="show-answer-btn">Show Answer</button>
+    <div id="card-back" hidden></div>
+    <div id="rating-buttons" hidden>
+      <button data-ease="1">Again</button>
+      <button data-ease="2">Hard</button>
+      <button data-ease="3">Good</button>
+      <button data-ease="4">Easy</button>
+    </div>
+  </div>
+
+  <div id="done" hidden>
+    <p>Deck complete!</p>
+  </div>
+
+  <script type="module" src="main.js"></script>
 </body>
 </html>
