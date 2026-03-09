@@ -46,8 +46,10 @@ $('#start-btn').addEventListener('click', async () => {
 function renderInFrame(el, html) {
   const iframe = document.createElement('iframe');
   iframe.srcdoc = html;
-  iframe.style.cssText = 'width:100%;border:none;';
+  iframe.style.cssText = 'width:100%;border:none;overflow:hidden';
   iframe.onload = () => {
+    const doc = iframe.contentDocument;
+    doc.body.style.margin = '0';
     iframe.style.height = iframe.contentDocument.body.scrollHeight + 'px';
   };
   el.innerHTML = '';
