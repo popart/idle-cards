@@ -43,6 +43,17 @@ $('#start-btn').addEventListener('click', async () => {
   showNext();
 });
 
+function renderInFrame(el, html) {
+  const iframe = document.createElement('iframe');
+  iframe.srcdoc = html;
+  iframe.style.cssText = 'width:100%;border:none;';
+  iframe.onload = () => {
+    iframe.style.height = iframe.contentDocument.body.scrollHeight + 'px';
+  };
+  el.innerHTML = '';
+  el.appendChild(iframe);
+}
+
 function showNext() {
   if (queue.length === 0) {
     $('#review').hidden = true;
@@ -51,10 +62,8 @@ function showNext() {
   }
 
   current = queue.shift();
-  const fields = Object.values(current.fields);
-
-  $('#card-front').innerHTML = fields[0].value;
-  $('#card-back').innerHTML = fields.slice(1).map(f => f.value).join('<hr>');
+  $('#card-front').hidden = false;
+  renderInFrame($('#card-front'), current.question);
   $('#card-back').hidden = true;
   $('#rating-buttons').hidden = true;
   $('#show-answer-btn').hidden = false;
@@ -72,6 +81,8 @@ function returnToDeckPicker() {
 $('#end-btn').addEventListener('click', returnToDeckPicker);
 
 $('#show-answer-btn').addEventListener('click', () => {
+  $('#card-front').hidden = true;
+  renderInFrame($('#card-back'), current.answer);
   $('#card-back').hidden = false;
   $('#rating-buttons').hidden = false;
   $('#show-answer-btn').hidden = true;
