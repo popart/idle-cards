@@ -1,4 +1,5 @@
 import { logEvent } from './log.js';
+import { initEvents, checkTriggers } from './events-engine.js';
 
 const PASSIVE_RATE = 1;      // energy per tick
 const TICK_INTERVAL = 1000;  // ms
@@ -9,6 +10,7 @@ const EASE_REWARD = { 1: 10, 2: 10, 3: 10, 4: 10 };
 // --- state ---
 const DEFAULT_STATE = {
   energy: 0,
+  firedEvents: [],
   // future: inventory, upgrades, etc.
 };
 
@@ -17,14 +19,18 @@ const SAVE_KEY = 'idle-cards-save';
 function loadState() {
   try {
     const saved = localStorage.getItem(SAVE_KEY);
-    return saved ? { ...DEFAULT_STATE, ...JSON.parse(saved) } : { ...DEFAULT_STATE };
-  } catch {
-    return { ...DEFAULT_STATE };
-  }
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      parsed.firedEvents = new Set(parsed.firedEvents ?? []);
+      return { ...DEFAULT_STATE, ...parsed };
+    }
+  } catch { /* fall through */ }
+  return { ...DEFAULT_STATE, firedEvents: new Set() };
 }
 
 function saveState() {
-  localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  const serializable = { ...state, firedEvents: [...state.firedEvents] };
+  localStorage.setItem(SAVE_KEY, JSON.stringify(serializable));
 }
 
 const state = loadState();
@@ -38,7 +44,8 @@ function render() {
 export function onCardAnswered(ease) {
   const reward = EASE_REWARD[ease] ?? 1;
   state.energy += reward;
-  logEvent(`Card reviewed — +${reward} energy`);
+  logEvent(`The Monolith pulses brightly (+${reward} energy)`);
+  checkTriggers('energy', state);
   saveState();
   render();
 }
@@ -46,8 +53,17 @@ export function onCardAnswered(ease) {
 // passive income tick
 setInterval(() => {
   state.energy += PASSIVE_RATE;
+  checkTriggers('energy', state);
   saveState();
   render();
 }, TICK_INTERVAL);
 
+export function resetGame() {
+  Object.assign(state, { ...DEFAULT_STATE, firedEvents: new Set() });
+  saveState();
+  initEvents(state);
+  render();
+}
+
+initEvents(state);
 render();
