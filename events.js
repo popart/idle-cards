@@ -4,6 +4,9 @@
 //   { type: 'start' }                 — fires when the game first loads
 //   { type: 'energy', threshold: N }  — fires when energy reaches N
 //
+// Optional:
+//   show: '#element-id'               — reveals a hidden element when the event fires
+//
 // Each event fires only once (tracked by id).
 
 export const EVENTS = [
@@ -26,6 +29,7 @@ export const EVENTS = [
     id: 'energy_100',
     trigger: { type: 'energy', threshold: 100 },
     message: 'The primates grow restless. One reaches out and touches the monolith.',
+    show: '#primates-widget',
   },
   {
     id: 'energy_500',

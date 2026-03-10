@@ -34,6 +34,7 @@ function saveState() {
 }
 
 const state = loadState();
+window.__game = { state, save: saveState, render: () => render() };
 
 function render() {
   document.querySelector('#energy').textContent = Math.floor(state.energy);

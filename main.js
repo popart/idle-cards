@@ -1,6 +1,7 @@
 import { onAnswer } from './anki.js';
 import { onCardAnswered, resetGame } from './game.js';
 import { resetLog } from './log.js';
+import './widgets.js';
 
 onAnswer(onCardAnswered);
 

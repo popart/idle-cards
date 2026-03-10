@@ -6,6 +6,11 @@ let firedIds;
 
 export function initEvents(state) {
   firedIds = state.firedEvents;
+  for (const event of EVENTS) {
+    if (firedIds.has(event.id) && event.show) {
+      document.querySelector(event.show).hidden = false;
+    }
+  }
   checkTriggers('start', state);
 }
 
@@ -14,7 +19,8 @@ export function checkTriggers(type, state) {
     if (firedIds.has(event.id)) continue;
     if (!matches(event.trigger, type, state)) continue;
     firedIds.add(event.id);
-    logEvent(event.message);
+    if (event.message) logEvent(event.message);
+    if (event.show) document.querySelector(event.show).hidden = false;
   }
 }
 
