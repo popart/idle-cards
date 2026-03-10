@@ -1,3 +1,5 @@
+import { logEvent } from './log.js';
+
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
@@ -43,6 +45,7 @@ $('#start-btn').addEventListener('click', async () => {
 
   const cards = await anki('cardsInfo', { cards: cardIds });
   queue = cards;
+  logEvent(`Started review: ${deck} (${cards.length} cards due)`);
   $('#deck-picker').hidden = true;
   $('#review').hidden = false;
   showNext();

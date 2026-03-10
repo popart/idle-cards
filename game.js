@@ -1,3 +1,5 @@
+import { logEvent } from './log.js';
+
 const PASSIVE_RATE = 1;      // energy per tick
 const TICK_INTERVAL = 1000;  // ms
 
@@ -34,7 +36,9 @@ function render() {
 }
 
 export function onCardAnswered(ease) {
-  state.energy += EASE_REWARD[ease] ?? 1;
+  const reward = EASE_REWARD[ease] ?? 1;
+  state.energy += reward;
+  logEvent(`Card reviewed — +${reward} energy`);
   saveState();
   render();
 }
