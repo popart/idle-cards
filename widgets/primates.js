@@ -1,4 +1,4 @@
-import { logEvent } from './log.js';
+import { logEvent } from '../log.js';
 
 document.querySelector('[data-action="gather-sticks"]').addEventListener('click', () => {
   logEvent('The primates scatter across the forest floor, collecting sticks.');
