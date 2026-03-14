@@ -8,5 +8,4 @@ export function logEvent(message) {
     if (state.gameLog.length > MAX_ENTRIES) {
         state.gameLog = state.gameLog.slice(-MAX_ENTRIES);
     }
-    updateState();
 }

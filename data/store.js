@@ -38,9 +38,7 @@ export function getState() {
     return state;
 }
 
-export function updateState(patch) {
-    //since we updated state directly, no need to patch
-    //Object.assign(state, patch);
+export function updateState() {
     save();
     subscribers.forEach(fn => fn(state));
 }
