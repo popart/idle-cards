@@ -39,8 +39,8 @@ export function getState() {
 }
 
 export function updateState() {
-    save();
     subscribers.forEach(fn => fn(state));
+    save();
 }
 
 export function subscribe(fn) {

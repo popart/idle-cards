@@ -1,6 +1,6 @@
 # idle-cards
 
-A single-page web app for interacting with Anki via AnkiConnect.
+A single-page idle RPG where answering Anki flashcards attacks enemies. Review cards, defeat enemies, and watch new ones appear.
 
 ## Setup
 
@@ -26,44 +26,40 @@ A single-page web app for interacting with Anki via AnkiConnect.
 ## Architecture
 
 ```
-store.js            — single source of truth for game state. all mutations go
-                      through updateState(patch), which saves to localStorage and
-                      notifies all subscribers.
-
-game.js             — passive income tick loop and card answer handler.
-                      calls updateState() to mutate energy.
+data/
+  store.js          — single source of truth for game state. mutate state
+                      directly via getState(), then call updateState() to save
+                      to localStorage and notify all subscribers.
+  hero.js           — Hero entity (name, level, hp, max_hp).
+  enemy.js          — Enemy entity (name, level, hp, max_hp).
 
 anki.js             — all AnkiConnect API calls and review UI logic.
                       exposes onAnswer(fn) so main.js can wire it to the game.
 
-events.js           — narrative script data. non-programmers edit this file only.
-                      each event has a trigger, a log message, and optionally a
-                      show: '#element-id' to reveal a hidden UI element.
-
-events-engine.js    — checks event triggers after each updateState and fires any
-                      that match. also restores show: state on page load.
-
-log.js              — event log persistence and rendering.
+log.js              — appends messages to state.gameLog (capped at 50 entries).
 
 widgets/
-  hud.js            — subscribes to store, renders energy and income rates.
-  primates.js       — handles button clicks for the primates widget.
+  hud.js            — subscribes to store, renders hero and enemy HP.
+  game-log.js       — subscribes to store, renders the event log.
 
-main.js             — wires everything together. imports all widgets so they
-                      register their subscriptions, and connects anki to the game.
+styles/
+  game-log.css      — styling for the game log.
+
+main.js             — wires everything together. subscribes widgets, handles
+                      combat logic (each card answer deals 2 damage), and spawns
+                      a new random enemy when the current one is defeated.
 ```
 
 ### Adding a new widget
 
-1. Add the HTML element to `index.html` (use `hidden` if it should be unlocked later)
-2. Create `widgets/your-widget.js` — import `subscribe` from `store.js`, define a `render(state)` function, call `subscribe(render)`
+1. Add the HTML element to `index.html`
+2. Create `widgets/your-widget.js` — import `subscribe` from `data/store.js`, define a `render(state)` function, call `subscribe(render)`
 3. Import it in `main.js`
-4. To unlock it via a narrative event, add `show: '#your-widget-id'` to an entry in `events.js`
 
 ### Console debugging
 
 ```js
 __game.getState()            // inspect current state
-__game.updateState({ energy: 500 })  // set values directly
-__game.reset()               // wipe state and restart
+let s = __game.getState(); s.energy = 500; __game.updateState()  // set values directly
+__game.resetState()          // wipe state and restart
 ```
