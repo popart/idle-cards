@@ -3,4 +3,5 @@ export function renderHUD(state) {
     document.querySelector('#hud').querySelector('#hero-hp').textContent = Math.floor(state.hero.hp);
     document.querySelector('#hud').querySelector('#enemy-max-hp').textContent = Math.floor(state.enemy.max_hp);
     document.querySelector('#hud').querySelector('#enemy-hp').textContent = Math.floor(state.enemy.hp);
+    document.querySelector('#hud').querySelector('#gold').textContent = Math.floor(state.gold);
 }

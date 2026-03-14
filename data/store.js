@@ -1,11 +1,13 @@
 import { Hero } from './hero.js'
 import { Enemy } from './enemy.js'
+import {ENEMY_TYPES} from './enemy-types.js'
 
 const SAVE_KEY = 'idle-cards-save';
 
 function defaultState() {
     return {
         energy: 0,
+        gold: 0,
         gameLog: [],
         hero: new Hero('andy'),
         enemy: new Enemy('slime'),
