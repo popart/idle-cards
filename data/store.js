@@ -3,23 +3,24 @@ import { Enemy } from './enemy.js'
 
 const SAVE_KEY = 'idle-cards-save';
 
-const DEFAULT_STATE = {
-    energy: 0,
-    firedEvents: [],
-    hero: new Hero('andy'),
-    enemy: new Enemy('slime'),
-    // future: inventory, upgrades, etc.
-};
+function defaultState() {
+    return {
+        energy: 0,
+        gameLog: [],
+        hero: new Hero('andy'),
+        enemy: new Enemy('slime'),
+    };
+}
 
 function load() {
     try {
         const saved = localStorage.getItem(SAVE_KEY);
         if (saved) {
             const parsed = JSON.parse(saved);
-            return { ...DEFAULT_STATE, ...parsed };
+            return { ...defaultState(), ...parsed };
         }
     } catch { /* fall through */ }
-    return DEFAULT_STATE;
+    return defaultState();
 }
 
 function save() {
@@ -32,6 +33,8 @@ const subscribers = [];
 export function getState() {
     //actually it's not like we're deep copying
     // so letting anyone just update state directly
+    console.log('fetching state');
+    console.log(state);
     return state;
 }
 
@@ -47,9 +50,10 @@ export function subscribe(fn) {
 }
 
 export function resetState() {
-  Object.assign(state, { ...DEFAULT_STATE, firedEvents: new Set() });
-  save();
-  subscribers.forEach(fn => fn(state));
+    // make a copy of the state
+    Object.assign(state, defaultState());
+    save();
+    subscribers.forEach(fn => fn(state));
 }
 
 // expose for console debugging

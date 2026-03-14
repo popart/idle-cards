@@ -1,4 +1,4 @@
-#event-log {
+#game-log {
   background-color: #2b2b2b;
   color: #cccccc;
   padding: 10px;
@@ -9,6 +9,6 @@
   overflow-y: auto;
 }
 
-#event-log div {
+#game-log div {
   padding: 2px 0;
 }

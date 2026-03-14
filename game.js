@@ -1,4 +1,4 @@
-import { getState, updateState } from './store.js';
+import { getState, updateState } from './data/store.js';
 import { logEvent } from './log.js';
 
 const PASSIVE_RATE = 1;      // energy per tick
